@@ -90,16 +90,13 @@ def doLoop():
 
 	initialCell = p
 
-	#print "In loop. To do: " + str(loopList) + " Dictionary of braces: " + str(braces)
 
 	while mArray[initialCell] > 0:
 		com = loopList[loopPointer]
 		if com == "[":
-			#print "Found an open brace on position " + str(loopPointer)
 			if mArray[p] == 0:
 				loopPointer = braces[loopPointer] 
 		elif com == "]":
-			#print "Found a closing brace on position %d" % loopPointer
 			if mArray[p] != 0:
 				loopPointer = braces[loopPointer] 
 		else:
