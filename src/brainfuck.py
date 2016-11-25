@@ -11,25 +11,24 @@ def execute_program(code, braces, cells=30000, aCells=[0], p=0):
 		elif command == "-": aCells[p] -= 1 if aCells[p] > 0 else 0
 		elif command == "<":
 			p -= 1
-			if p < 0:
-				if len(aCells) >= cells:
-					print "Reached cells limit: " + str(cells)
-					sys.exit(1)
+			if len(aCells) >= cells:
+				print "Reached cells limit: " + str(cells)
+				sys.exit(1)
+			if p < 0: 
 				aCells.insert(0, 0)
 				p = 0
 		elif command == ">":
 			p += 1
-			if p == len(aCells):
-				if len(aCells) >= cells:
-					print "Reached cells limit: " + str(cells)
-					sys.exit(1)
-				aCells.append(0)
+			if len(aCells) >= cells:
+				print "Reached cells limit: " + str(cells)
+				sys.exit(1)
+			if p == len(aCells): aCells.append(0)
 		elif command == ".": sys.stdout.write(chr(aCells[p]))
 		elif command == ",": aCells[p] = ord(getch.getch())
 		elif command == "[":
 			if aCells[p] == 0:
 				instr_pointer = braces[instr_pointer] 
-		elif command == "]":
+		else:
 			if aCells[p] != 0:
 				instr_pointer = braces[instr_pointer] 
 		instr_pointer += 1
@@ -62,48 +61,30 @@ def execute_program_debug(code, braces, cells=30000, aCells=[0], p=0):
 
 	while instr_pointer < len(code):
 		command = code[instr_pointer]
+		
+		if command != "[" and command != "]" and command != ".":
+			aCells, p = execute_program([command], braces, cells, aCells, p)
 
-		if command == "+":	
-			print "Incremented cell number"
-			aCells[p] += 1 if aCells[p] < 255 else 0
-		elif command == "-": 
-			print "Decremented cell number"
-			aCells[p] -= 1 if aCells[p] > 0 else 0
-		elif command == "<":
-			p -= 1
-			print "Pointer to left"
-			if p < 0:
-				if len(aCells) >= cells:
-					print "Reached cells limit: " + str(cells)
-					sys.exit(1)
-				aCells.insert(0, 0)
-				p = 0
-		elif command == ">":
-			p += 1
-			print "Pointer to right"
-			if p == len(aCells):
-				if len(aCells) >= cells:
-					print "Reached cells limit: " + str(cells)
-					sys.exit(1)
-				aCells.append(0)
+		if command == "+": print "Incremented cell number"
+		elif command == "-": print "Decremented cell number"
+		elif command == "<": print "Pointer to left"
+		elif command == ">": print "Pointer to right"
 		elif command == ".": 
-			final_output += (chr(aCells[p]))
-			print "Printing character: %s" % (chr(aCells[p]))
-		elif command == ",": 
-			aCells[p] = ord(getch.getch())
-			print "Got character: %s, ascii value: %d" % (chr(aCells[p]) if aCells[p] != 13 else "line-break", aCells[p])
+			print "Printing character: %s" % (chr(aCells[p]) if aCells[p] != 13 else "line-break")
+			final_output += chr(aCells[p])
+		elif command == ",": print "Got character: %s, ascii value: %d" % (chr(aCells[p]) if aCells[p] != 13 else "line-break", aCells[p])
 		elif command == "[":
 			print "Entering loop on position: should we do it?",
 			if aCells[p] == 0:
 				print "No, jumping to the end"
-				instr_pointer = braces[instr_pointer] 
+				instr_pointer = braces[instr_pointer]
 			else:
 				print "Yes, execute it"
-		elif command == "]":
+		else:
 			print "Closing loop, does it end? ",
 			if aCells[p] != 0:
 				print "It does not end, jumping to the start" 
-				instr_pointer = braces[instr_pointer] 
+				instr_pointer = braces[instr_pointer]
 			else:
 				print "It ends, continue program."
 		instr_pointer += 1
