@@ -143,9 +143,9 @@ def start(file, cells, debug):
 
 if __name__ == "__main__": 
 
-	help_message = """ Usage: brainfuck [-d] [-l cell-limit] filename.bf
+	help_message = """ Usage: brainfuck [-d] [-l <cell-limit>] filename.bf
 		-d: Debug program. Show every step
-		-l number_of_cells: Limit number of cells to number_of_cells. Default is 30000"""
+		-l <cell-limit>: Limit number of cells to <cell-limit>. Default is 30000"""
 
 	if not (len(sys.argv) >= 2 and len(sys.argv) <= 5) :
 		print help_message
