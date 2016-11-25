@@ -62,17 +62,9 @@ def execute_program_debug(code, braces, cells=30000, aCells=[0], p=0):
 	while instr_pointer < len(code):
 		command = code[instr_pointer]
 		
-		if command != "[" and command != "]" and command != ".":
-			aCells, p = execute_program([command], braces, cells, aCells, p)
-
-		if command == "+": print "Incremented cell number"
-		elif command == "-": print "Decremented cell number"
-		elif command == "<": print "Pointer to left"
-		elif command == ">": print "Pointer to right"
-		elif command == ".": 
+		if command == ".": 
 			print "Printing character: %s" % (chr(aCells[p]) if aCells[p] != 13 else "line-break")
 			final_output += chr(aCells[p])
-		elif command == ",": print "Got character: %s, ascii value: %d" % (chr(aCells[p]) if aCells[p] != 13 else "line-break", aCells[p])
 		elif command == "[":
 			print "Entering loop on position: should we do it?",
 			if aCells[p] == 0:
@@ -80,13 +72,22 @@ def execute_program_debug(code, braces, cells=30000, aCells=[0], p=0):
 				instr_pointer = braces[instr_pointer]
 			else:
 				print "Yes, execute it"
-		else:
+		elif command == "]":
 			print "Closing loop, does it end? ",
 			if aCells[p] != 0:
 				print "It does not end, jumping to the start" 
 				instr_pointer = braces[instr_pointer]
 			else:
 				print "It ends, continue program."
+		else:
+			aCells, p = execute_program([command], braces, cells, aCells, p)
+
+			if command == "+": print "Incremented cell number"
+			elif command == "-": print "Decremented cell number"
+			elif command == "<": print "Pointer to left"
+			elif command == ">": print "Pointer to right"
+			elif command == ",": print "Got character: %s, ascii value: %d" % (chr(aCells[p]) if aCells[p] != 13 else "line-break", aCells[p])
+		
 		instr_pointer += 1
 		print_status(aCells,p)
 	return (aCells, p, "Program output: %s" % final_output)
@@ -108,7 +109,11 @@ def print_status(aCells, p):
 def start(file, cells, debug):
 	content = list()
 
-	with open(file) as f: content = filter(lambda x: x in ["+", "-", "<", ">", ".", ",", "[", "]"], f.read())
+	try:
+		with open(file) as f: content = filter(lambda x: x in ["+", "-", "<", ">", ".", ",", "[", "]"], f.read())
+	except IOError:
+		print "Could not open file: %s" % file
+		sys.exit(1)
 
 	if debug:
 		print "### Program %s ###" % file
@@ -130,22 +135,27 @@ def interpreter():
 	cells = [0]
 	pointer = 0
 	while code != "exit":
-		error = False
-		for i in range(len(code)):
-			if code[i] not in ["+", "-", "<", ">", ".", ",", "[", "]"]:
-				print ""
-				print "\t" + str(code[0:i+1])
-				print "\t" + " " * i + "^"
-				print ""
-				print "Syntax Error: character not valid! column: %d" % i
-				error = True
-				break
-		if not error:
-			result = execute_program(code, get_braces(code), aCells=cells, p=pointer)
-			print ""
-			cells = result[0]
-			pointer = result[1]
+		if code == "help":
+			print "help: Shows help\nreset: Resets cells and pointer\nexit: Exit"
+		elif code == "reset":
+			cells = [0]
+			pointer = 0
 			print_status(cells, pointer)
+		else:
+			error = False
+			for i in range(len(code)):
+				if code[i] not in ["+", "-", "<", ">", ".", ",", "[", "]"]:
+					print ""
+					print "\t" + str(code[0:i+1])
+					print "\t" + " " * i + "^"
+					print ""
+					print "Syntax Error: character not valid! column: %d" % i
+					error = True
+					break
+			if not error:
+				cells, pointer = execute_program(code, get_braces(code), aCells=cells, p=pointer)
+				print ""
+				print_status(cells, pointer)
 		code = raw_input(prompt).replace(" ", "")
 
 
