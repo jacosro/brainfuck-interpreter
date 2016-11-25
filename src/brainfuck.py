@@ -87,7 +87,7 @@ def execute_program_debug(code, braces, cells=30000, aCells=[0], p=0):
 					sys.exit(1)
 				aCells.append(0)
 		elif command == ".": 
-			final_output += (chr(aCells[p] % 256))
+			final_output += (chr(aCells[p]))
 			print "Printing character: %s" % (chr(aCells[p]))
 		elif command == ",": 
 			aCells[p] = ord(getch.getch())
@@ -107,7 +107,7 @@ def execute_program_debug(code, braces, cells=30000, aCells=[0], p=0):
 			else:
 				print "It ends, continue program."
 		instr_pointer += 1
-		print_pointer(aCells,p)
+		print_status(aCells,p)
 	return (aCells, p, "Program output: %s" % final_output)
 
 def getLength(number):
@@ -116,7 +116,7 @@ def getLength(number):
 		return 1 + getLength(number)
 	return 1
 
-def print_pointer(aCells, p):
+def print_status(aCells, p):
 	print aCells
 	jumps = 1 + 2*p + sum(map(getLength, aCells[0:p]))
 	print " " * jumps + "^"
@@ -131,7 +131,7 @@ def start(file, cells, debug):
 
 	if debug:
 		print "### Program %s ###" % file
-		print execute_program_debug(content, get_braces(content), cells)
+		print execute_program_debug(content, get_braces(content), cells)[2]
 	else:
 		execute_program(content, get_braces(content), cells)
 
@@ -164,7 +164,7 @@ def interpreter():
 			print ""
 			cells = result[0]
 			pointer = result[1]
-			print_pointer(cells, pointer)
+			print_status(cells, pointer)
 		code = raw_input(prompt).replace(" ", "")
 
 
