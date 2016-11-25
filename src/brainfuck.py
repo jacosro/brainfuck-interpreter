@@ -143,6 +143,8 @@ def interpreter():
 		sys.exit(0)
 	signal.signal(signal.SIGINT, signal_handler)
 	prompt = "bf> "
+	print "### Brainfuck interpreter ###"
+	print "Type 'exit' to exit"
 	code = raw_input(prompt).replace(" ", "")
 	cells = [0]
 	pointer = 0
