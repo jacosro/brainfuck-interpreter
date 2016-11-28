@@ -7,7 +7,7 @@ def execute_program(code, braces, cells=30000, aCells=[0], p=0):
 	while instr_pointer < len(code):
 		command = code[instr_pointer]
 
-		if command == "+":	aCells[p] += 1 if aCells[p] < 255 else 0
+		if command == "+":	aCells[p] += 1 if aCells[p] < 255 else 255
 		elif command == "-": aCells[p] -= 1 if aCells[p] > 0 else 0
 		elif command == "<":
 			p -= 1
