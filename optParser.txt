@@ -1,6 +1,0 @@
-from optparse import OptionParser
-
-optParser = OptionParser()
-optParser.add_option('-d','--debug',action='store_true',dest='debug',help='Enable extra debugging info.')
-optParser.add_option('-t','--test',action='store_true',dest='testing',help='Test mode: leave temporary files for examination.')
-optParser.add_option('-p','--sliceprefix',action='store',dest='sliceprefix',help='Specifies the prefix to use for individual slice filenames.')
