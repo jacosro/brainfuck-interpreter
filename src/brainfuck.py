@@ -160,43 +160,28 @@ def interpreter():
 
 
 if __name__ == "__main__": 
-
 	if len(sys.argv) == 1:
 		interpreter()
 	else:
-		help_message = """ Usage: 
-	Interactive: brainfuck
-	Interpreter: brainfuck [-d] [-l <cell-limit>] filename.bf
-		-d: Debug program. Show every step
-		-l <cell-limit>: Limit number of cells to <cell-limit>. Default is 30000"""
+            import argparse
+            # brainfuck.py [-d] [-c cells] file.bf
+            parser = argparse.ArgumentParser()
+            parser.add_argument("-d", "--debug", action="store_true", help="Debug program. Show every step")
+            parser.add_argument("-c", "--cells", action="store", nargs=1, dest="cells", type=int, help="Cell limit")
+            parser.add_argument("file", action="store", help="The brainfuck file (*.b/*.bf)")
+            args = parser.parse_args()
+            
+            debug = False
+            cell_limit = 30000
+            file = args.file
 
-		if not (len(sys.argv) >= 2 and len(sys.argv) <= 5) :
-			print help_message
-			sys.exit(1)
+            if args.d:
+                debug = True
+            if args.cells:
+                cell_limit = args.cells
 
-		cell_limit = 30000
-		debug = False
+            if not (file.endswith(".b") or file.endswith(".bf")):
+                print "The file must be a brainfuck (*.b/*.bf) program"
+                sys.exit(1)
 
-		if "--help" in sys.argv:
-			print help_message
-			sys.exit(0)
-		if "-d" in sys.argv:
-			debug = True
-		if "-l" in sys.argv:
-			index = sys.argv.index("-l") + 1
-			if len(sys.argv) <= index:
-				print help_message
-				sys.exit(1)
-			try:
-				cell_limit = int(sys.argv[index])
-			except ValueError:
-				print help_message
-				sys.exit(1)
-
-		file = sys.argv.pop()
-
-		if not (file.endswith(".b") or file.endswith(".bf")):
-			print "The file must be a brainfuck (*.b/*.bf) program"
-			sys.exit(1)
-
-		start(file, cell_limit, debug)
+            start(file, cell_limit, debug)
