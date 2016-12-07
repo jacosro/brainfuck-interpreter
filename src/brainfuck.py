@@ -13,6 +13,8 @@ def execute_program(code, braces, cells=30000, aCells=[0], p=0):
 			p -= 1
 			if len(aCells) >= cells:
 				print "Reached cells limit: " + str(cells)
+				print "Last state:"
+				print aCells
 				sys.exit(1)
 			if p < 0: 
 				aCells.insert(0, 0)
@@ -21,6 +23,8 @@ def execute_program(code, braces, cells=30000, aCells=[0], p=0):
 			p += 1
 			if len(aCells) >= cells:
 				print "Reached cells limit: " + str(cells)
+				print "Last state:"
+				print aCells
 				sys.exit(1)
 			if p == len(aCells): aCells.append(0)
 		elif command == ".": sys.stdout.write(chr(aCells[p]))
@@ -38,17 +42,14 @@ def get_braces(code):
 	stack = list()
 	final = dict()
 
-	ordered = zip(code, range(len(code)))
-
-	braces_position = filter(lambda (x,y): x in ["[","]"], ordered)
-
-	for command, position in braces_position:
-		if command == "[":
-			stack.append(position)
-		else:
+	for index in range(0, len(code)):
+		if code[index] == "[":
+			stack.append(index)
+		elif code[index] == "]":
 			startBrace = stack.pop()
-			final[startBrace] = position
-			final[position] = startBrace
+			final[startBrace] = index
+			final[index] = startBrace
+		index += 1
 	return final
 
 
@@ -163,25 +164,25 @@ if __name__ == "__main__":
 	if len(sys.argv) == 1:
 		interpreter()
 	else:
-            import argparse
-            # brainfuck.py [-d] [-c cells] file.bf
-            parser = argparse.ArgumentParser()
-            parser.add_argument("-d", "--debug", action="store_true", help="Debug program. Show every step")
-            parser.add_argument("-c", "--cells", action="store", nargs=1, dest="cells", type=int, help="Cell limit")
-            parser.add_argument("file", action="store", help="The brainfuck file (*.b/*.bf)")
-            args = parser.parse_args()
-            
-            debug = False
-            cell_limit = 30000
-            file = args.file
+		import argparse
+		# brainfuck.py [-d] [-c cells] [-o output_file] file.bf
+		parser = argparse.ArgumentParser()
+		parser.add_argument("-v", "--verbose", action="store_true", help="Verbosing")
+		parser.add_argument("-c", "--cells", action="store", dest="cells", type=int, help="Cell limit")
+		parser.add_argument("-o", "--output_file", action="store", dest="output_file", type=str, help="Output file")
+		parser.add_argument("file", action="store", help="The brainfuck file (*.b/*.bf)")
+		args = parser.parse_args()
 
-            if args.d:
-                debug = True
-            if args.cells:
-                cell_limit = args.cells
+		cell_limit = 30000
+		file = args.file
 
-            if not (file.endswith(".b") or file.endswith(".bf")):
-                print "The file must be a brainfuck (*.b/*.bf) program"
-                sys.exit(1)
+		if not (file.endswith(".b") or file.endswith(".bf")):
+		    print "The file must be a brainfuck (*.b/*.bf) program"
+		    sys.exit(1)
 
-            start(file, cell_limit, debug)
+		if args.cells:
+		    cell_limit = args.cells
+		if args.output_file:
+			sys.stdout = open(args.output_file, 'w')
+
+		start(file, cell_limit, args.verbose)
