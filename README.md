@@ -5,6 +5,7 @@ Usage:
    
 
      Interactive: brainfuck
-     Interpreter: brainfuck [-d] [-l <cell-limit>] filename.bf
+     Interpreter: brainfuck [-d] [-l <cell_limit>] [-o <output_file>] filename.bf
     		-d: Debug program. Show every step
-    		-l <cell-limit>: Limit number of cells to <cell-limit>. Default is 30000
+    		-l <cell_limit>: Limit number of cells to <cell-limit>. Default is 30000
+         -o <output_file>: Write output to the specified file
