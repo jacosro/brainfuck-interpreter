@@ -165,7 +165,7 @@ if __name__ == "__main__":
         interpreter()
     else:
         import argparse
-        # brainfuck.py [-d] [-c cells] [-o output_file] file.bf
+        # brainfuck.py [-v] [-c cells] [-o output_file] file.bf
         parser = argparse.ArgumentParser()
         parser.add_argument("-v", "--verbose", action="store_true", help="Verbosing")
         parser.add_argument("-c", "--cells", action="store", dest="cells", type=int, help="Cell limit")
